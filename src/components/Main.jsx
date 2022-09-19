@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {AiOutlineLoading3Quarters} from "react-icons/ai"
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -34,11 +35,12 @@ import {
           .then(function (response) {
            
             if (response.status === 200){
+            
                 plays = response.data.plays;
                 landings = response.data.landings;
                const stats = response.data.vslStats;         
               totalMinsPlayed = response.data.vslMinutes;
-              console.log(totalMinsPlayed)         
+                    
                 stats.forEach((val, key)=>{
                     datax.push(String(val.count));
                     labelx.push((String(val.minutes)+"mins")); 
@@ -64,7 +66,7 @@ import {
               },
               title: {
                 display: true,
-                text: 'Chart.js Line Chart',
+                text: 'Vsl Watch Statistics Over Time Progression',
               },
             },
             scales:{
@@ -105,17 +107,43 @@ const Main = () => {
     const [vslLands, setVslLands]= useState(0)
     const [engagementRate, setEngagementRate] = useState(0);
     const [minsPlayed, setMinsPlayed] = useState(0);
+    
     const vslLength = 2957;
+
     useEffect(()=>{
         if (plays !== 0){
-            setVslPlays(plays)
-            setVslLands(landings)
-            const t1 = plays * vslLength;
-            setMinsPlayed(totalMinsPlayed);
-            const eg = minsPlayed / t1;
-            setEngagementRate(eg.toFixed(2))
+          setVslPlays(plays)
+          setVslLands(landings)
+          const t1 = plays * vslLength;
+          setMinsPlayed(totalMinsPlayed);
+          const eg = minsPlayed / t1;
+          setEngagementRate(eg.toFixed(2))
+          setDataLoaded(true)
         }
-    }, [plays])
+
+     
+    }, [plays , minsPlayed, dataLoaded])
+
+    const LoadingMessage = () => {
+      return(
+        <h1 className="text-center text-3xl inline-flex mt-4">
+          Fetching Data..<AiOutlineLoading3Quarters className="spinner" />
+        </h1>
+      )
+    }
+    function DataSection() {
+      return (
+        <div className="grid grid-rows-2 grid-flow-col gap-4 mt-10 justify-items-center">
+        <div className="text-2xl">Landings:  {vslLands}</div>
+        <div className="text-2xl">Plays: {vslPlays}</div>
+        <div className="text-2xl">Play Rate: <span className="text-green-600">{((vslPlays/vslLands)*100).toFixed(2) + '%'}</span></div>
+        <div className="text-2xl">Total Minutes Played: {minsPlayed / 60} mins</div>
+        <div className="text-2xl">Engagement Rate: <span className="text-green-600">{engagementRate}%</span></div>
+        <div className="text-2xl">Total Minutes Played: {(vslLength / 60).toFixed(2)} mins</div>
+
+          </div>
+      )
+    }
     function VslChart(){ 
 
               return (  
@@ -124,15 +152,9 @@ const Main = () => {
             
                   <Line options={options} data={data} className="h-auto w-auto object-fit" />
               </div>
-    
-              <div className="grid grid-rows-2 grid-flow-col gap-4 mt-10 justify-items-center">
-              <div className="text-2xl">Landings: {vslLands}</div>
-              <div className="text-2xl">Plays: {vslPlays}</div>
-              <div className="text-2xl">Play Rate: {((vslPlays/vslLands)*100).toFixed(2) + '%'}</div>
-              <div className="text-2xl">Total Minutes Played: {minsPlayed / 60} mins</div>
-              <div className="text-2xl">Engagement Rate: {engagementRate}%</div>
-  
-                </div>
+          
+                {(dataLoaded===true)  ? <DataSection /> : <LoadingMessage />}
+          
                 </>
               );
 
