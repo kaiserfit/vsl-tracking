@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {AiOutlineLoading3Quarters} from "react-icons/ai"
+import Chart from "./Chart";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -25,11 +26,12 @@ import {
     Legend
   );
 
+  const url = 'http://localhost/apiv3/index.php/report/range?limit=100&vid=1';
 
   var labelx = [];
   var datax = [];
   var plays, landings, totalMinsPlayed = 0;
-  axios.get('http://localhost/apiv3/index.php/report/range?limit=100&from=2022-09-15&to=2022-09-16&vid=1', {
+  axios.get(url, {
            
           })
           .then(function (response) {
@@ -109,7 +111,7 @@ const Main = () => {
     const [minsPlayed, setMinsPlayed] = useState(0);
     
     const vslLength = 2957;
-
+  
     useEffect(()=>{
         if (plays !== 0){
           setVslPlays(plays)
@@ -124,6 +126,9 @@ const Main = () => {
      
     }, [plays , minsPlayed, dataLoaded])
 
+
+
+    
     const LoadingMessage = () => {
       return(
         <h1 className="text-center text-3xl inline-flex mt-4">
@@ -139,7 +144,7 @@ const Main = () => {
         <div className="text-2xl">Play Rate: <span className="text-green-600">{((vslPlays/vslLands)*100).toFixed(2) + '%'}</span></div>
         <div className="text-2xl">Total Minutes Played: {minsPlayed / 60} mins</div>
         <div className="text-2xl">Engagement Rate: <span className="text-green-600">{engagementRate}%</span></div>
-        <div className="text-2xl">Total Minutes Played: {(vslLength / 60).toFixed(2)} mins</div>
+        <div className="text-2xl">VSL Duration: {(vslLength / 60).toFixed(2)} mins</div>
 
           </div>
       )
@@ -150,7 +155,7 @@ const Main = () => {
                 <>
               <div className="container h-auto p-4 w-3/4 mx-auto mt-5 align-middle rounded-2xl bg-gradient-to-r from-indigo-500">
             
-                  <Line options={options} data={data} className="h-auto w-auto object-fit" />
+                  <Line options={options} data={data} className="h-auto w-auto object-contain" />
               </div>
           
                 {(dataLoaded===true)  ? <DataSection /> : <LoadingMessage />}
@@ -163,8 +168,8 @@ const Main = () => {
     }
     return (
         <>
+        <Chart />
         <VslChart />
-        
         </>
     );
 }
