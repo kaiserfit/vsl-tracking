@@ -37,10 +37,12 @@ import {
                 plays = response.data.plays;
                 landings = response.data.landings;
                const stats = response.data.vslStats;         
+              totalMinsPlayed = response.data.vslMinutes;
+              console.log(totalMinsPlayed)         
                 stats.forEach((val, key)=>{
                     datax.push(String(val.count));
                     labelx.push((String(val.minutes)+"mins")); 
-                    totalMinsPlayed += val.minutes;  
+                  
                 });
               
          
@@ -109,7 +111,9 @@ const Main = () => {
             setVslPlays(plays)
             setVslLands(landings)
             const t1 = plays * vslLength;
-
+            setMinsPlayed(totalMinsPlayed);
+            const eg = minsPlayed / t1;
+            setEngagementRate(eg.toFixed(2))
         }
     }, [plays])
     function VslChart(){ 
@@ -125,7 +129,8 @@ const Main = () => {
               <div className="text-2xl">Landings: {vslLands}</div>
               <div className="text-2xl">Plays: {vslPlays}</div>
               <div className="text-2xl">Play Rate: {((vslPlays/vslLands)*100).toFixed(2) + '%'}</div>
-              <div className="text-2xl">Total Minutes Played:</div>
+              <div className="text-2xl">Total Minutes Played: {minsPlayed / 60} mins</div>
+              <div className="text-2xl">Engagement Rate: {engagementRate}%</div>
   
                 </div>
                 </>
