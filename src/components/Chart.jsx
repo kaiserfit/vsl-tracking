@@ -99,7 +99,8 @@ import {
     
     function GetData($from, $to) {
         setDataLoaded(false)
-        const url = 'http://localhost/apiv3/index.php/report/range?limit=100&vid=1&from='+$from+'&to='+$to
+        // const url = 'http://localhost/apiv3/index.php/report/range?limit=100&vid=1&from='+$from+'&to='+$to
+        const url = 'https://pay.kaiserfitapp.com/apiv3/index.php/report/range?limit=100&vid=1&from='+$from+'&to='+$to
 
         axios.get(url, {
            
