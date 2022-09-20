@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import {AiOutlineLoading3Quarters} from "react-icons/ai"
 import {
@@ -39,6 +40,10 @@ import {
     const [chartConfigData, setChartConfigData] = useState(null);
     const vslLength = 2957;
     
+    //dates
+    const [filterError, setFilterError] = useState(false);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
     const options = {
         responsive: true,
@@ -93,8 +98,8 @@ import {
     }, [dataLoaded]);
     
     function GetData($from, $to) {
-
-        const url = 'http://localhost/apiv3/index.php/report/range?limit=100&vid=1'
+        setDataLoaded(false)
+        const url = 'http://localhost/apiv3/index.php/report/range?limit=100&vid=1&from='+$from+'&to='+$to
 
         axios.get(url, {
            
@@ -117,7 +122,7 @@ import {
                 });
                 setChartData(datax);
                 setChartLabel(labelx);
-          setDataLoaded(true)
+                setDataLoaded(true)
                 
               
           }
@@ -129,7 +134,7 @@ import {
 
     function DataSection() {
         return (
-          <div className="grid grid-rows-2 grid-flow-col gap-4 mt-10 justify-items-center">
+          <div className="grid grid-rows-2 grid-flow-col gap-2 mt-10 justify-items-center">
           <div className="text-2xl">Landings:  {vslLands}</div>
           <div className="text-2xl">Plays: {vslPlays}</div>
           <div className="text-2xl">Play Rate: <span className="text-green-600">{((vslPlays/vslLands)*100).toFixed(2) + '%'}</span></div>
@@ -153,7 +158,7 @@ import {
 
         return (  
           <>
-        <div className="container h-auto p-4 w-3/4 mx-auto mt-5 align-middle rounded-2xl bg-gradient-to-r from-indigo-500">
+        <div className="container h-auto p-4 w-3/5 mx-auto mt-5 align-middle rounded-2xl bg-gradient-to-r from-indigo-500">
       
             <Line options={options} data={data} className="h-auto w-auto object-contain" />
         </div>
@@ -168,25 +173,49 @@ import {
 }
 
 
+  const SubmitFilters=()=>{
+    // console.log(startDate, endDate);
+    setFilterError(false);
+    if (endDate.getTime() < startDate.getTime()){
+      setFilterError(true);
+      console.log('fa')
+    } else {
+      
+      var f = startDate.getFullYear()+'-'+(startDate.getMonth()+1) +'-'+startDate.getDate()
+      var t = endDate.getFullYear()+'-'+(endDate.getMonth()+1) +'-'+endDate.getDate()
+      GetData(f,t)
+    }
+    
+  }
+  const FilterDates = () => {
+
+
+    return (
+      <div className="container w-1/2 mx-auto">
+
+      <h1 className="text-2xl font-bold">Filter Dates: </h1>
+      <h1 className={`text-sm text-red-600 ${(filterError===true) ? "visible" : "invisible" }`}>Invalid Date Range</h1>
+    
+      <div className="grid grid-rows-1 grid-flow-col gap-2 mt-4 justify-items-center">
+          <div>
+              From:  <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+          </div>
+          <div>
+              To:  <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
+          </div>
+
+          <div>
+              <button className="bg-slate-900 drop-shadow px-4 py-1 text-white rounded" onClick={SubmitFilters}>Submit</button>
+          </div>
+      </div>
+    </div>
+    )
+  }
+
     return (
         <>
-        <div className="container w-1/2 mx-auto">
-
-            <h1 className="text-2xl font-bold">Filter Dates: </h1>
-            <div className="grid grid-rows-1 grid-flow-col gap-2 mt-4 justify-items-center">
-                <div>
-                    From:  <input type="date" className="rounded border-gray border-2"></input>
-                </div>
-                <div>
-                    To:  <input type="date" className="rounded border-gray border-2"></input>
-                </div>
-
-                <div>
-                    <button className="bg-slate-900 drop-shadow px-4 py-1 text-white rounded">Submit</button>
-                </div>
-            </div>
-        </div>
-
+     
+      <FilterDates />
         <VslChart />
         </>
     )
