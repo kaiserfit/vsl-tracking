@@ -38,7 +38,7 @@ import {
     const [chartLabel, setChartLabel] = useState(null);
     const [chartOptions, setChartOptions] = useState(null);
     const [chartConfigData, setChartConfigData] = useState(null);
-    const vslLength = 3261;
+    const vslLength = 2962.2;
     
     //dates
     const [filterError, setFilterError] = useState(false);
