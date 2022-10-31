@@ -14,6 +14,7 @@ import {
     Legend,
   } from 'chart.js';
   import { Line } from 'react-chartjs-2';
+import { type } from "@testing-library/user-event/dist/type";
  
   
   ChartJS.register(
@@ -38,7 +39,7 @@ import {
     const [chartLabel, setChartLabel] = useState(null);
     const [chartOptions, setChartOptions] = useState(null);
     const [chartConfigData, setChartConfigData] = useState(null);
-    const vslLength = 2962.2;
+    const vslLength = (2962.2 / 60) / 60;
     
     //dates
     const [filterError, setFilterError] = useState(false);
@@ -93,7 +94,10 @@ import {
     useEffect(()=>{
         if (dataLoaded){
             const t1 = vslPlays * vslLength;
-            const eg = minsPlayed / t1;
+          
+            const mp = (minsPlayed / 60) / 60;
+            console.log("hours played: "+mp , "minutes played: "+minsPlayed);
+            const eg = (mp / t1) * 100;
             setEngagementRate(eg.toFixed(2))
         }
     }, [dataLoaded]);
