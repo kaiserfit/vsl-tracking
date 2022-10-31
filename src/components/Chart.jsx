@@ -144,9 +144,9 @@ import { type } from "@testing-library/user-event/dist/type";
           <div className="text-2xl">Landings:  {vslLands}</div>
           <div className="text-2xl">Plays: {vslPlays}</div>
           <div className="text-2xl">Play Rate: <span className="text-green-600">{((vslPlays/vslLands)*100).toFixed(2) + '%'}</span></div>
-          <div className="text-2xl">Total Minutes Played: {minsPlayed / 60} mins</div>
+          <div className="text-2xl">Total Hours Played: {((minsPlayed / 60) / 60).toFixed(2)} Hours</div>
           <div className="text-2xl">Engagement Rate: <span className="text-green-600">{engagementRate}%</span></div>
-          <div className="text-2xl">VSL Duration: {(vslLength / 60).toFixed(2)} mins</div>
+          <div className="text-2xl">VSL Duration: {vslLength.toFixed(2)} hours</div>
   
             </div>
         )
