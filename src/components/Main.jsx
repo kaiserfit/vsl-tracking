@@ -9,6 +9,7 @@ const Main = () => {
    
     return (
         <>
+        
         <Chart />
         </>
     );
